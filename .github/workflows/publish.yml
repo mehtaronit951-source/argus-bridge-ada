@@ -39,16 +39,16 @@ jobs:
 
       - name: Publish to Alire
         env:
-          # Alire uses this variable for automated PRs
+          # Use the environment variable Alire expects for automated PRs
           ALR_GITHUB_TOKEN: ${{ secrets.ALIRE_GITHUB_TOKEN }}
         run: |
           # 1. Setup toolchain
           alr toolchain --select gnat_native
           alr toolchain --select gprbuild
           
-          # 2. Configure token in settings as well to be safe
+          # 2. Configure token in settings
           alr settings --set --global github.token "${{ secrets.ALIRE_GITHUB_TOKEN }}"
           
           # 3. Final Publish
-          # We use --force to bypass the "Do you want to proceed?" prompt
-          alr --non-interactive publish --force
+          # Global flags (-n and -f) MUST come before the subcommand 'publish'
+          alr --non-interactive --force publish
