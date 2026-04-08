@@ -4,8 +4,8 @@ version = "1.0.0"
 authors = ["Ronit Mehta"]
 maintainers = ["ronit.mehta@example.com"]
 maintainers-logins = ["mehtaronit951-source"]
-licenses = "MIT"
-# Add these to satisfy the 'recommended properties' check
+license = "MIT"
+# These two lines remove the warnings that trigger the "Stop" prompt
 tags = ["argus", "bridge", "debate", "ai"]
 website = "https://github.com/mehtaronit951-source/argus-bridge-ada"
 
