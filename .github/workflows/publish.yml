@@ -20,7 +20,7 @@ jobs:
       - name: Set up Alire
         uses: alire-project/setup-alire@v3
         with:
-          version: 'stable'
+          version: '2.1.0'
 
       - name: Create and Push Tag
         run: |
