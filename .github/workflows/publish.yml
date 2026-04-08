@@ -48,5 +48,6 @@ jobs:
           alr toolchain --select gnat_native
           alr toolchain --select gprbuild
           
-          # 3. Final Publish (Flag moved before the subcommand)
-          alr --non-interactive publish
+          # 3. Final Publish with piped 'yes'
+          # We use 'yes' to answer the "Do you want to proceed?" prompt automatically
+          yes | alr --non-interactive publish
