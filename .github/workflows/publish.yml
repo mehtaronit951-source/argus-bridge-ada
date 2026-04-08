@@ -39,17 +39,14 @@ jobs:
 
       - name: Publish to Alire
         env:
-          # Alire looks for this env variable or the setting below
           GH_TOKEN: ${{ secrets.ALIRE_GITHUB_TOKEN }}
         run: |
-          # 1. Use 'settings' instead of 'config' to avoid warnings
+          # 1. Configure the token
           alr settings --set --global github.token "${{ secrets.ALIRE_GITHUB_TOKEN }}"
           
-          # 2. REMOVED 'cd ada' because your files are in the root directory
-          
-          # 3. Setup toolchain
+          # 2. Setup toolchain
           alr toolchain --select gnat_native
           alr toolchain --select gprbuild
           
-          # 4. Final Publish
-          alr publish --non-interactive
+          # 3. Final Publish (Flag moved before the subcommand)
+          alr --non-interactive publish
