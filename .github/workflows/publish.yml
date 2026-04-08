@@ -1,0 +1,52 @@
+name: Manual Alire Publish
+
+on:
+  workflow_dispatch:
+    inputs:
+      version_tag:
+        description: 'Version tag (e.g., v1.0.0)'
+        required: true
+        default: 'v1.0.0'
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # Full history is required for Alire to validate the repo
+
+      - name: Set up Alire
+        uses: alire-project/setup-alire@v3
+        with:
+          version: 'stable'
+
+      - name: Create and Push Tag
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          # Check if tag already exists to avoid errors
+          if git rev-parse "${{ github.event.inputs.version_tag }}" >/dev/null 2>&1; then
+            echo "Tag already exists, skipping creation."
+          else
+            git tag -a ${{ github.event.inputs.version_tag }} -m "Release ${{ github.event.inputs.version_tag }}"
+            git push origin ${{ github.event.inputs.version_tag }}
+          fi
+
+      - name: Publish to Alire
+        env:
+          ALR_GITHUB_TOKEN: ${{ secrets.ALIRE_GITHUB_TOKEN }}
+        run: |
+          # 1. Link your GitHub Token
+          alr config --set --global github.token $ALR_GITHUB_TOKEN
+          
+          # 2. Navigate to your project folder
+          cd ada
+          
+          # 3. Setup the compiler environment
+          alr toolchain --select gnat_native
+          alr toolchain --select gprbuild
+          
+          # 4. Trigger the publishing PR
+          alr publish --non-interactive
