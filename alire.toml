@@ -1,11 +1,13 @@
-[general]
-name        = "argus_bridge"
+name = "argus_bridge"
 description = "Ada bridge for the argus-debate-ai Python package"
-version     = "1.0.0"
-licenses    = "MIT"
+version = "1.0.0"
+authors = ["Ronit Mehta"]
+maintainers = ["ronit.mehta@example.com"] # Change to your actual email
+maintainers-logins = ["mehtaronit951-source"]
+licenses = "MIT"
 
 [build-switches]
-release.optimization = "performance"
+"*" .optimization = "performance"
 
 [[depends-on]]
-gnat        = ">=12"
+gnat = ">=12"
