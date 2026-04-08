@@ -1,6 +1,9 @@
 name = "argus_bridge"
 description = "Ada bridge for the argus-debate-ai Python package"
 version = "1.0.0"
+# --- Add this line ---
+project-files = ["argus_bridge.gpr"]
+# ---------------------
 authors = ["Ronit Mehta"]
 maintainers = ["ronit.mehta@example.com"]
 maintainers-logins = ["mehtaronit951-source"]
