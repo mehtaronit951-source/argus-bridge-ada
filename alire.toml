@@ -1,0 +1,11 @@
+[general]
+name        = "argus_bridge"
+description = "Ada bridge for the argus-debate-ai Python package"
+version     = "1.0.0"
+licenses    = "MIT"
+
+[build-switches]
+release.optimization = "performance"
+
+[[depends-on]]
+gnat        = ">=12"

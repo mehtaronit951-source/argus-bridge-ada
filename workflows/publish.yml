@@ -1,0 +1,49 @@
+name: Manual Alire Publish
+
+on:
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+    inputs:
+      version_tag:
+        description: 'Version tag (e.g., v1.0.0)'
+        required: true
+        default: 'v1.0.0'
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # Alire needs the full history to verify the release
+
+      - name: Set up Alire
+        uses: alire-project/setup-alire@v3
+        with:
+          version: 'stable'
+
+      - name: Create Git Tag
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git tag -a ${{ github.event.inputs.version_tag }} -m "Release ${{ github.event.inputs.version_tag }}"
+          git push origin ${{ github.event.inputs.version_tag }}
+
+      - name: Configure Alire & Publish
+        env:
+          ALR_GITHUB_TOKEN: ${{ secrets.ALIRE_GITHUB_TOKEN }}
+        run: |
+          # Configure the token for Alire
+          alr config --set --global github.token $ALR_GITHUB_TOKEN
+          
+          # Move into the folder containing alire.toml
+          cd ada
+          
+          # Select a default toolchain for the runner
+          alr toolchain --select gnat_native
+          alr toolchain --select gprbuild
+          
+          # Run the non-interactive publish
+          # This will automatically fork the index and create a PR
+          alr publish --non-interactive
