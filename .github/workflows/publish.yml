@@ -8,6 +8,11 @@ on:
         required: true
         default: 'v1.0.0'
 
+# --- ADD THIS PERMISSION BLOCK ---
+permissions:
+  contents: write
+# ---------------------------------
+
 jobs:
   publish:
     runs-on: ubuntu-latest
@@ -15,7 +20,9 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
         with:
-          fetch-depth: 0 # Full history is required for Alire to validate the repo
+          fetch-depth: 0
+          # Using your PAT here ensures the push has full authority
+          token: ${{ secrets.ALIRE_GITHUB_TOKEN }}
 
       - name: Set up Alire
         uses: alire-project/setup-alire@v3
@@ -26,7 +33,8 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          # Check if tag already exists to avoid errors
+          
+          # Check if tag already exists
           if git rev-parse "${{ github.event.inputs.version_tag }}" >/dev/null 2>&1; then
             echo "Tag already exists, skipping creation."
           else
@@ -38,15 +46,12 @@ jobs:
         env:
           ALR_GITHUB_TOKEN: ${{ secrets.ALIRE_GITHUB_TOKEN }}
         run: |
-          # 1. Link your GitHub Token
           alr config --set --global github.token $ALR_GITHUB_TOKEN
-          
-          # 2. Navigate to your project folder
           cd ada
           
-          # 3. Setup the compiler environment
+          # Select toolchains
           alr toolchain --select gnat_native
           alr toolchain --select gprbuild
           
-          # 4. Trigger the publishing PR
+          # Final push to the community index
           alr publish --non-interactive
